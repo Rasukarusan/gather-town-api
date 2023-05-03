@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "node -r ts-node/register src/app.ts",
-    "build": "tsc"
+    "dev": "node -r ts-node/register src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
   },
   "license": "ISC",
   "devDependencies": {
