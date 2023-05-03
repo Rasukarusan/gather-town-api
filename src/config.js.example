@@ -1,0 +1,4 @@
+module.exports = {
+  GATHER_API_KEY: '',
+  GATHER_SPACE_ID: ''
+}
