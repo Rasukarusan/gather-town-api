@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "node -r ts-node/register src/app.ts"
+    "start": "node -r ts-node/register src/app.ts",
+    "build": "tsc"
   },
   "license": "ISC",
   "devDependencies": {
