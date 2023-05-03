@@ -1,6 +1,8 @@
 import { Game } from '@gathertown/gather-game-client'
 global.WebSocket = require('isomorphic-ws')
-const { GATHER_API_KEY, GATHER_SPACE_ID } = require('./config')
+require('dotenv').config()
+const GATHER_API_KEY = process.env.GATHER_API_KEY || ''
+const GATHER_SPACE_ID = process.env.GATHER_SPACE_ID || ''
 const MAP_ID = 'office-main'
 
 const game = new Game(GATHER_SPACE_ID, () =>

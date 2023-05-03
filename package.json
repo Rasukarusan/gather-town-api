@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@gathertown/gather-game-client": "^38.0.1",
+    "dotenv": "^16.0.3",
     "isomorphic-ws": "^4.0.1",
     "ws": "^8.2.1"
   }
