@@ -10,7 +10,8 @@ game.connect()
 
 game.subscribeToConnection((connected) => {
   console.log({ connected })
-  game.subscribeToEvent('playerMoves', () => {
-    console.log(game.players)
+  game.subscribeToEvent('playerJoins', async (data, context) => {
+    console.log('player joined')
+    console.log(context)
   })
 })
