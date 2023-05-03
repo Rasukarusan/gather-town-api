@@ -13,11 +13,11 @@ v16.10.0
 
 ## Setup
 
-`config.js.example` をコピーして `GATHER_API_KEY`、`GATHER_SPACE_ID` をセットしてください。
+`env.example` をコピーして `GATHER_API_KEY`、`GATHER_SPACE_ID` をセットしてください。
 
 ```sh
-$ cp src/config.js.example src/config.js
-$ vim src/config.js
+$ cp .env.example .env
+$ vim .env
 ```
 
 - API_KEY の取得
@@ -29,21 +29,15 @@ https://app.gather.town/apikeys
 ブラウザで開いたときの URL から取得できます。例えば下記のような URL の場合、  
 `https://app.gather.town/app/SefvUrOwU9Omhw32/my_test_space`
 
-```diff
-module.exports = {
-+  GATHER_SPACE_ID: 'SefvUrOwU9Omhw32\\my_test_space'
-}
+```sh
+GATHER_SPACE_ID='SefvUrOwU9Omhw32\my_test_space'
 ```
-
-となります。スペース名の前の`/`は`\\`になることに注意してください。
 
 空白を含むスペース名の場合は下記のようになります。  
 `https://app.gather.town/app/SefvUrOwU9Omhw32/my%20test%20space`
 
-```diff
-module.exports = {
-+  GATHER_SPACE_ID: 'SefvUrOwU9Omhw32\\my test space'
-}
+```sh
+GATHER_SPACE_ID='SefvUrOwU9Omhw32\my test space'
 ```
 
 ## Run
@@ -53,7 +47,7 @@ module.exports = {
 $ yarn
 
 # 起動
-$ yarn start
+$ yarn dev
 ```
 
 ## 参考
