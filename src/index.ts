@@ -82,7 +82,7 @@ const postGatherJoinMessage = async (game: Gather, slack: SlackApp) => {
     console.log({ connected })
     setInterval(async () => {
       await postGatherJoinMessage(game, slack)
-    }, 3000)
+    }, 300000) // 5分
     game.subscribeToEvent('playerJoins', async (data, context) => {
       console.log('player joined')
     })
