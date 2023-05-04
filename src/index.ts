@@ -1,5 +1,6 @@
 import * as http from 'http'
 import { initGather } from './gather'
+import { initSlack } from './slack'
 const MAP_ID = 'office-main'
 const port = process.env.PORT || 8080
 
@@ -13,6 +14,13 @@ const healthServerListener = () => {
 
 ;(async () => {
   const game = await initGather()
+  const slack = await initSlack()
+
+  // @ts-ignore
+  slack.message('hello', async ({ message, say }) => {
+    // イベントがトリガーされたチャンネルに say() でメッセージを送信します
+    await say(`Hey there <@${message.user}>!`)
+  })
 
   game.subscribeToConnection((connected) => {
     console.log({ connected })
