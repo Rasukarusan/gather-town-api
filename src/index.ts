@@ -5,7 +5,7 @@ import { initGather } from './gather'
 import {
   deleteAllMessages,
   generatePresenceMessage,
-  postGatherJoinMessage,
+  updateJoinMessage,
 } from './message'
 import { initSlack } from './slack'
 import { SlackTs } from './types'
@@ -30,17 +30,18 @@ let slackTs: SlackTs = { date: '', ts: '' }
 
   gather.subscribeToConnection((connected) => {
     console.log({ connected })
-    const interval = process.env.APP_ENV === 'development' ? 3000 : 300000
+    const interval = process.env.APP_ENV === 'development' ? 10000 : 300000
     setInterval(async () => {
-      slackTs = await postGatherJoinMessage(gather, slack, slackTs)
+      slackTs = await updateJoinMessage(gather, slack, slackTs)
     }, interval)
     gather.subscribeToEvent('playerJoins', async (data, context) => {
       console.log('player joined')
-      console.log(context)
+      slackTs = await updateJoinMessage(gather, slack, slackTs)
     })
 
     gather.subscribeToEvent('playerExits', async (data, context) => {
-      console.log('player exit', context)
+      console.log('player exit')
+      slackTs = await updateJoinMessage(gather, slack, slackTs)
     })
     gather.subscribeToEvent('playerMoves', async (data, context) => {
       const { player, playerId } = context

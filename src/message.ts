@@ -62,14 +62,14 @@ const newMessage = async (gather: Gather, slack: SlackApp) => {
     ts: newMessage.ts || '',
   }
 }
-export const postGatherJoinMessage = async (
+export const updateJoinMessage = async (
   gather: Gather,
   slack: SlackApp,
   slackTs: SlackTs
 ): Promise<SlackTs> => {
   const today = dayjs().format('YYYY-MM-DD')
-  // 本日すでに投稿済みの場合
   try {
+    // 本日すでに投稿済みの場合
     if (slackTs?.date === today) {
       // slackメッセージを更新
       const players = Object.keys(gather.players).map(
