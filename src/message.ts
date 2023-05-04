@@ -13,7 +13,7 @@ export const generatePresenceMessage = (players: Player[]) => {
   newLine()
   writeLine(`:man-raising-hand: ${playerNames}`)
   newLine()
-  writeLine(`updated ${dayjs().format('hh:mm:ss')}`)
+  writeLine(`updated ${dayjs().format('HH:mm:ss')}`)
   newLine()
   return message.join('\n')
 }
