@@ -55,3 +55,4 @@ $ yarn dev
 - [4 時間のモブプロで Gather に鬼ごっこ機能をつくった](https://tech-blog.lapras.com/techBlogs/202208-gather-tag-game)
 - https://gathertown.notion.site/Gather-Websocket-API-bf2d5d4526db412590c3579c36141063
 - https://support.gather.town/help/connect
+- https://github.com/Assembless/gather-town-x-slack
