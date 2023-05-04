@@ -62,10 +62,10 @@ const postGatherJoinMessage = async (game: Gather, slack: SlackApp) => {
         ts: slackTs.ts,
         text,
       })
-    } else {
-      // slackメッセージを新規投稿
-      await newMessage(game, slack)
+      return
     }
+    // slackメッセージを新規投稿
+    await newMessage(game, slack)
   } catch (e) {
     console.error('エラー', e)
     await newMessage(game, slack)
