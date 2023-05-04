@@ -1,6 +1,11 @@
+import type { Game as Gather, Player } from '@gathertown/gather-game-client'
+import { App as SlackApp } from '@slack/bolt'
 import * as http from 'http'
 import { initGather } from './gather'
+import { deleteAllMessages, generatePresenceMessage } from './message'
 import { initSlack } from './slack'
+import { SlackTs } from './types'
+const dayjs = require('dayjs')
 const MAP_ID = 'office-main'
 const port = process.env.PORT || 8080
 
@@ -12,21 +17,63 @@ const healthServerListener = () => {
   server.listen(port)
 }
 
+let slackTs: SlackTs
+const postGatherJoinMessage = async (game: Gather, slack: SlackApp) => {
+  const today = dayjs().format('YYYY-MM-DD')
+  console.log(slackTs)
+  // 本日すでに投稿済みの場合
+  if (slackTs?.date === today) {
+    // slackメッセージを更新
+    const players = Object.keys(game.players).map((key) => game.players[key])
+    const text = generatePresenceMessage(players)
+    await slack.client.chat.update({
+      channel: process.env.SLACK_CHANNEL_ID || '',
+      ts: slackTs.ts,
+      text,
+    })
+  } else {
+    // slackメッセージを新規投稿
+    await deleteAllMessages(slack, process.env.SLACK_CHANNEL_ID || '')
+    const players = Object.keys(game.players).map((key) => game.players[key])
+    const text = generatePresenceMessage(players)
+    const newMessage = await slack.client.chat.postMessage({
+      channel: process.env.SLACK_CHANNEL_ID || '',
+      mrkdwn: true,
+      text,
+      link_names: true,
+      attachments: [
+        {
+          text: '',
+          actions: [
+            {
+              text: 'Go to Gather',
+              type: 'button',
+              url: encodeURI(
+                `https://app.gather.town/app/${process.env.GATHER_SPACE_ID}`
+              ).replace('%5C', '/'),
+            },
+          ],
+        },
+      ],
+    })
+    slackTs = {
+      date: today,
+      ts: newMessage.ts || '',
+    }
+  }
+}
+
 ;(async () => {
   const game = await initGather()
   const slack = await initSlack()
 
-  // @ts-ignore
-  slack.message('hello', async ({ message, say }) => {
-    // イベントがトリガーされたチャンネルに say() でメッセージを送信します
-    await say(`Hey there <@${message.user}>!`)
-  })
-
   game.subscribeToConnection((connected) => {
     console.log({ connected })
+    setInterval(async () => {
+      await postGatherJoinMessage(game, slack)
+    }, 3000)
     game.subscribeToEvent('playerJoins', async (data, context) => {
       console.log('player joined')
-      console.log(context)
     })
     game.subscribeToEvent('playerMoves', async (data, context) => {
       const { player, playerId } = context
