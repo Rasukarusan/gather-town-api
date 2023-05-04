@@ -49,7 +49,7 @@ let slackTs: SlackTs = { date: '', ts: '' }
     })
     gather.subscribeToEvent('playerMoves', async (data, context) => {
       const { player, playerId } = context
-      gather.setTextStatus(`x: ${player?.x}, y:${player?.y}`, playerId)
+      // gather.setTextStatus(`x: ${player?.x}, y:${player?.y}`, playerId)
       // テレポート入り口
       if (player?.x === 31 && player?.y === 34) {
         gather.teleport(MAP_ID, 31, 40, playerId)
