@@ -18,48 +18,57 @@ const healthServerListener = () => {
 }
 
 let slackTs: SlackTs
+
+const newMessage = async (game: Gather, slack: SlackApp) => {
+  const today = dayjs().format('YYYY-MM-DD')
+  await deleteAllMessages(slack, process.env.SLACK_CHANNEL_ID || '')
+  const players = Object.keys(game.players).map((key) => game.players[key])
+  const text = generatePresenceMessage(players)
+  const newMessage = await slack.client.chat.postMessage({
+    channel: process.env.SLACK_CHANNEL_ID || '',
+    mrkdwn: true,
+    text,
+    link_names: true,
+    attachments: [
+      {
+        text: '',
+        actions: [
+          {
+            text: 'Go to Gather',
+            type: 'button',
+            url: encodeURI(
+              `https://app.gather.town/app/${process.env.GATHER_SPACE_ID}`
+            ).replace('%5C', '/'),
+          },
+        ],
+      },
+    ],
+  })
+  slackTs = {
+    date: today,
+    ts: newMessage.ts || '',
+  }
+}
 const postGatherJoinMessage = async (game: Gather, slack: SlackApp) => {
   const today = dayjs().format('YYYY-MM-DD')
-  console.log(slackTs)
   // 本日すでに投稿済みの場合
-  if (slackTs?.date === today) {
-    // slackメッセージを更新
-    const players = Object.keys(game.players).map((key) => game.players[key])
-    const text = generatePresenceMessage(players)
-    await slack.client.chat.update({
-      channel: process.env.SLACK_CHANNEL_ID || '',
-      ts: slackTs.ts,
-      text,
-    })
-  } else {
-    // slackメッセージを新規投稿
-    await deleteAllMessages(slack, process.env.SLACK_CHANNEL_ID || '')
-    const players = Object.keys(game.players).map((key) => game.players[key])
-    const text = generatePresenceMessage(players)
-    const newMessage = await slack.client.chat.postMessage({
-      channel: process.env.SLACK_CHANNEL_ID || '',
-      mrkdwn: true,
-      text,
-      link_names: true,
-      attachments: [
-        {
-          text: '',
-          actions: [
-            {
-              text: 'Go to Gather',
-              type: 'button',
-              url: encodeURI(
-                `https://app.gather.town/app/${process.env.GATHER_SPACE_ID}`
-              ).replace('%5C', '/'),
-            },
-          ],
-        },
-      ],
-    })
-    slackTs = {
-      date: today,
-      ts: newMessage.ts || '',
+  try {
+    if (slackTs?.date === today) {
+      // slackメッセージを更新
+      const players = Object.keys(game.players).map((key) => game.players[key])
+      const text = generatePresenceMessage(players)
+      await slack.client.chat.update({
+        channel: process.env.SLACK_CHANNEL_ID || '',
+        ts: slackTs.ts,
+        text,
+      })
+    } else {
+      // slackメッセージを新規投稿
+      await newMessage(game, slack)
     }
+  } catch (e) {
+    console.error('エラー', e)
+    await newMessage(game, slack)
   }
 }
 
