@@ -6,6 +6,8 @@ import { deleteAllMessages, generatePresenceMessage } from './message'
 import { initSlack } from './slack'
 import { SlackTs } from './types'
 const dayjs = require('dayjs')
+dayjs().tz('Asia/Tokyo')
+
 const MAP_ID = 'office-main'
 const port = process.env.PORT || 8080
 
