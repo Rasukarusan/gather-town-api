@@ -64,6 +64,81 @@ let slackTs: SlackTs = { date: '', ts: '' }
       }
     })
 
+    // 紙吹雪でプレイヤーを吹き飛ばす
+    gather.subscribeToEvent('playerShootsConfetti', (data, context) => {
+      const shooter = context.player
+      if (!shooter) return
+      const { direction } = shooter
+      switch (direction) {
+        case SpriteDirectionEnum_ENUM.Up:
+        case SpriteDirectionEnum_ENUM.UpAlt: {
+          const players = Object.keys(gather.players).forEach((key) => {
+            const player = gather.players[key]
+            if (player.x === shooter.x && player.y === shooter.y! + -1) {
+              gather.teleport(MAP_ID, player.x!, player.y - 3, key)
+            } else if (
+              player.y === shooter.y! - 2 &&
+              shooter.x! - 1 <= player.x &&
+              player.x <= shooter.x! + 1
+            ) {
+              gather.teleport(MAP_ID, player.x!, player.y - 3, key)
+            }
+          })
+          break
+        }
+        case SpriteDirectionEnum_ENUM.Down:
+        case SpriteDirectionEnum_ENUM.DownAlt: {
+          const players = Object.keys(gather.players).forEach((key) => {
+            const player = gather.players[key]
+            if (player.x === shooter.x && player.y === shooter.y! + 1) {
+              gather.teleport(MAP_ID, player.x!, player.y + 3, key)
+            } else if (
+              player.y === shooter.y! + 2 &&
+              shooter.x! - 1 <= player.x &&
+              player.x <= shooter.x! + 1
+            ) {
+              gather.teleport(MAP_ID, player.x!, player.y + 3, key)
+            }
+          })
+          break
+        }
+        case SpriteDirectionEnum_ENUM.Left:
+        case SpriteDirectionEnum_ENUM.LeftAlt: {
+          const players = Object.keys(gather.players).forEach((key) => {
+            const player = gather.players[key]
+            if (player.x === shooter.x! - 1 && player.y === shooter.y) {
+              gather.teleport(MAP_ID, player.x! - 3, player.y, key)
+            } else if (
+              player.x === shooter.x! - 2 &&
+              shooter.y! - 1 <= player.y &&
+              player.y <= shooter.y! + 1
+            ) {
+              gather.teleport(MAP_ID, player.x! - 3, player.y, key)
+            }
+          })
+          break
+        }
+        case SpriteDirectionEnum_ENUM.Right:
+        case SpriteDirectionEnum_ENUM.RightAlt: {
+          const players = Object.keys(gather.players).forEach((key) => {
+            const player = gather.players[key]
+            if (player.x === shooter.x! + 1 && player.y === shooter.y) {
+              gather.teleport(MAP_ID, player.x! + 3, player.y, key)
+            } else if (
+              player.x === shooter.x! + 2 &&
+              shooter.y! - 1 <= player.y &&
+              player.y <= shooter.y! + 1
+            ) {
+              gather.teleport(MAP_ID, player.x! + 3, player.y, key)
+            }
+          })
+          break
+        }
+        default:
+          break
+      }
+    })
+
     // ゴーストのとき障害物を通り抜ける
     gather.subscribeToEvent('playerGhosts', async (data, context) => {
       const { player, playerId } = context
