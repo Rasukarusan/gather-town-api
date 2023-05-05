@@ -1,8 +1,13 @@
 # Gather Town API
 
-gather town の WebSocket API で遊ぶためのリポジトリ
+[Gather](https://app.gather.town/) の WebSocket API で遊ぶためのリポジトリ
 
-https://app.gather.town/
+|  |  |
+| :---: | :---: |
+|  <img src="https://user-images.githubusercontent.com/17779386/236443642-8eb7d1da-3454-421f-a96d-34d5f488777f.gif" width="300"/> |  <img src="https://user-images.githubusercontent.com/17779386/236444474-becdf142-1872-46c3-9ca0-fb3d7026761f.gif" width="400" />|
+| 吹き飛ばし  | 障害物すり抜け |
+|<img src="https://user-images.githubusercontent.com/17779386/236446040-a5c05664-4cfa-4b3c-998f-85ea6359b89f.gif" width="300" />| <img width="310" alt="image" src="https://user-images.githubusercontent.com/17779386/236445133-8453f7f0-0f8a-489c-8c73-5710a9dde41e.png">|||
+|テレポート|slack通知|
 
 ## Require
 
