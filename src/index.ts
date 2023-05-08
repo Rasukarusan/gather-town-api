@@ -6,14 +6,8 @@ import {
 import { App as SlackApp } from '@slack/bolt'
 import * as http from 'http'
 import { initGather } from './gather'
-import {
-  deleteAllMessages,
-  generatePresenceMessage,
-  updateJoinMessage,
-} from './message'
+import { postJoinMessage } from './message'
 import { initSlack } from './slack'
-import { SlackTs } from './types'
-const dayjs = require('dayjs')
 
 const MAP_ID = 'office-main'
 const port = process.env.PORT || 8080
@@ -26,7 +20,6 @@ const healthServerListener = () => {
   server.listen(port)
 }
 
-let slackTs: SlackTs = { date: '', ts: '' }
 ;(async () => {
   healthServerListener()
   const gather = await initGather()
@@ -35,18 +28,16 @@ let slackTs: SlackTs = { date: '', ts: '' }
   gather.subscribeToConnection((connected) => {
     console.log({ connected })
     const interval = process.env.APP_ENV === 'development' ? 10000 : 300000
-    setInterval(async () => {
-      slackTs = await updateJoinMessage(gather, slack, slackTs)
-    }, interval)
     gather.subscribeToEvent('playerJoins', async (data, context) => {
       console.log('player joined')
-      slackTs = await updateJoinMessage(gather, slack, slackTs)
+      await postJoinMessage(gather, slack)
     })
 
     gather.subscribeToEvent('playerExits', async (data, context) => {
       console.log('player exit')
-      slackTs = await updateJoinMessage(gather, slack, slackTs)
+      await postJoinMessage(gather, slack)
     })
+
     gather.subscribeToEvent('playerMoves', async (data, context) => {
       const { player, playerId } = context
       // gather.setTextStatus(`x: ${player?.x}, y:${player?.y}`, playerId)
