@@ -3,7 +3,7 @@ import { App as SlackApp } from '@slack/bolt'
 import { SlackTs } from './types'
 const dayjs = require('dayjs')
 
-export const generatePresenceMessage = (players: Player[]) => {
+const generateJoinMessage = (players: Player[]) => {
   let message: string[] = []
   const newLine = () => message.push(` `)
   const writeLine = (value: string) => message.push(value)
@@ -21,7 +21,7 @@ export const generatePresenceMessage = (players: Player[]) => {
   return message.join('\n')
 }
 
-export const deleteAllMessages = async (app: SlackApp, channelId: string) => {
+const deleteAllMessages = async (app: SlackApp, channelId: string) => {
   const history = await app.client.conversations.history({
     channel: channelId,
   })
@@ -33,11 +33,14 @@ export const deleteAllMessages = async (app: SlackApp, channelId: string) => {
   })
 }
 
-const newMessage = async (gather: Gather, slack: SlackApp) => {
+export const postJoinMessage = async (
+  gather: Gather,
+  slack: SlackApp
+): Promise<SlackTs> => {
   const today = dayjs().format('YYYY-MM-DD')
   await deleteAllMessages(slack, process.env.SLACK_CHANNEL_ID || '')
   const players = Object.keys(gather.players).map((key) => gather.players[key])
-  const text = generatePresenceMessage(players)
+  const text = generateJoinMessage(players)
   const newMessage = await slack.client.chat.postMessage({
     channel: process.env.SLACK_CHANNEL_ID || '',
     mrkdwn: true,
@@ -69,24 +72,19 @@ export const updateJoinMessage = async (
 ): Promise<SlackTs> => {
   const today = dayjs().format('YYYY-MM-DD')
   try {
-    // 本日すでに投稿済みの場合
-    if (slackTs?.date === today) {
-      // slackメッセージを更新
-      const players = Object.keys(gather.players).map(
-        (key) => gather.players[key]
-      )
-      const text = generatePresenceMessage(players)
-      await slack.client.chat.update({
-        channel: process.env.SLACK_CHANNEL_ID || '',
-        ts: slackTs.ts,
-        text,
-      })
-      return slackTs
-    }
-    // slackメッセージを新規投稿
-    return await newMessage(gather, slack)
+    // slackメッセージを更新
+    const players = Object.keys(gather.players).map(
+      (key) => gather.players[key]
+    )
+    const text = generateJoinMessage(players)
+    await slack.client.chat.update({
+      channel: process.env.SLACK_CHANNEL_ID || '',
+      ts: slackTs.ts,
+      text,
+    })
+    return slackTs
   } catch (e) {
     console.error('エラー', e)
-    return await newMessage(gather, slack)
+    return await postJoinMessage(gather, slack)
   }
 }
