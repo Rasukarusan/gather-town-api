@@ -6,11 +6,7 @@ import {
 import { App as SlackApp } from '@slack/bolt'
 import * as http from 'http'
 import { initGather } from './gather'
-import {
-  deleteAllMessages,
-  generatePresenceMessage,
-  updateJoinMessage,
-} from './message'
+import { updateJoinMessage, postJoinMessage } from './message'
 import { initSlack } from './slack'
 import { SlackTs } from './types'
 const dayjs = require('dayjs')
@@ -35,17 +31,20 @@ let slackTs: SlackTs = { date: '', ts: '' }
   gather.subscribeToConnection((connected) => {
     console.log({ connected })
     const interval = process.env.APP_ENV === 'development' ? 10000 : 300000
-    setInterval(async () => {
-      slackTs = await updateJoinMessage(gather, slack, slackTs)
-    }, interval)
     gather.subscribeToEvent('playerJoins', async (data, context) => {
       console.log('player joined')
-      slackTs = await updateJoinMessage(gather, slack, slackTs)
+      slackTs = await postJoinMessage(gather, slack)
     })
 
     gather.subscribeToEvent('playerExits', async (data, context) => {
       console.log('player exit')
-      slackTs = await updateJoinMessage(gather, slack, slackTs)
+      const today = dayjs().format('YYYY-MM-DD')
+      // 本日未投稿の場合
+      if (slackTs?.date !== today) {
+        slackTs = await postJoinMessage(gather, slack)
+      } else {
+        slackTs = await updateJoinMessage(gather, slack, slackTs)
+      }
     })
     gather.subscribeToEvent('playerMoves', async (data, context) => {
       const { player, playerId } = context
