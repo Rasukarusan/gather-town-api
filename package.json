@@ -18,6 +18,7 @@
   "dependencies": {
     "@gathertown/gather-game-client": "^38.0.1",
     "@slack/bolt": "^3.13.1",
+    "dayjs": "^1.11.7",
     "dotenv": "^16.0.3",
     "isomorphic-ws": "^4.0.1",
     "ws": "^8.2.1"
