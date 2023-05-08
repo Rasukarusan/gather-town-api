@@ -61,3 +61,7 @@ $ yarn dev
 - https://gathertown.notion.site/Gather-Websocket-API-bf2d5d4526db412590c3579c36141063
 - https://support.gather.town/help/connect
 - https://github.com/Assembless/gather-town-x-slack
+
+## 記事
+
+[Gather TownのWebSocket APIで入室時にslackに通知するようにした](https://www.rasukarusan.com/entry/2023/05/06/093404)
