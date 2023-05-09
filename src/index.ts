@@ -165,4 +165,10 @@ let slackTs: SlackTs = { date: '', ts: '' }
       }
     })
   })
+  // スラッシュコマンド"/players"を受信
+  // @ts-ignore
+  slack.command('/players', async ({ ack, say }) => {
+    await ack()
+    slackTs = await postJoinMessage(gather, slack)
+  })
 })()
