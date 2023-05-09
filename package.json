@@ -7,7 +7,9 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "deploy": "flyctl deploy --local-only",
-    "status": "flyctl status"
+    "status": "flyctl status",
+    "log": "flyctl logs",
+    "destroy": " flyctl apps destroy gather-api"
   },
   "license": "ISC",
   "devDependencies": {
