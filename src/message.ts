@@ -85,6 +85,6 @@ export const updateJoinMessage = async (
     return slackTs
   } catch (e) {
     console.error('エラー', e)
-    return await postJoinMessage(gather, slack)
+    return { date: '', ts: '' }
   }
 }
