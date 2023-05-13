@@ -158,19 +158,19 @@ let slackTs: SlackTs = { date: '', ts: '' }
       switch (direction) {
         case SpriteDirectionEnum_ENUM.Up:
         case SpriteDirectionEnum_ENUM.UpAlt:
-          gather.teleport(MAP_ID, player.x!, player.y! - 1, playerId, direction)
+          gather.teleport(MAP_ID, player.x!, player.y! - 2, playerId, direction)
           break
         case SpriteDirectionEnum_ENUM.Down:
         case SpriteDirectionEnum_ENUM.DownAlt:
-          gather.teleport(MAP_ID, player.x!, player.y! + 1, playerId, direction)
+          gather.teleport(MAP_ID, player.x!, player.y! + 2, playerId, direction)
           break
         case SpriteDirectionEnum_ENUM.Left:
         case SpriteDirectionEnum_ENUM.LeftAlt:
-          gather.teleport(MAP_ID, player.x! - 1, player.y!, playerId, direction)
+          gather.teleport(MAP_ID, player.x! - 2, player.y!, playerId, direction)
           break
         case SpriteDirectionEnum_ENUM.Right:
         case SpriteDirectionEnum_ENUM.RightAlt:
-          gather.teleport(MAP_ID, player.x! + 1, player.y!, playerId, direction)
+          gather.teleport(MAP_ID, player.x! + 2, player.y!, playerId, direction)
           break
         default:
           break
