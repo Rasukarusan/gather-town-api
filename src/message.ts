@@ -21,16 +21,25 @@ const generateJoinMessage = (players: Player[]) => {
   return message.join('\n')
 }
 
-const deleteAllMessages = async (app: SlackApp, channelId: string) => {
-  const history = await app.client.conversations.history({
-    channel: channelId,
-  })
-  // @ts-ignore
-  history.messages.forEach((message) => {
-    if (message?.app_id === process.env.SLACK_BOT_ID) {
-      app.client.chat.delete({ channel: channelId, ts: message.ts! })
-    }
-  })
+export const deleteAllMessages = async (app: SlackApp, channelId: string) => {
+  try {
+    const history = await app.client.conversations.history({
+      channel: channelId,
+    })
+    if (!history.messages) return
+    await Promise.all(
+      history.messages.map(async (message) => {
+        if (message?.app_id === process.env.SLACK_BOT_ID) {
+          return await app.client.chat.delete({
+            channel: channelId,
+            ts: message.ts!,
+          })
+        }
+      })
+    )
+  } catch (e) {
+    console.log('削除エラー', e)
+  }
 }
 
 export const postJoinMessage = async (
@@ -84,7 +93,7 @@ export const updateJoinMessage = async (
     })
     return slackTs
   } catch (e) {
-    console.error('エラー', e)
+    console.error('更新エラー', e)
     return { date: '', ts: '' }
   }
 }
