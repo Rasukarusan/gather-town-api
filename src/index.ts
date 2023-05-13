@@ -183,4 +183,11 @@ let slackTs: SlackTs = { date: '', ts: '' }
     await ack()
     slackTs = await postJoinMessage(gather, slack)
   })
+
+  // スラッシュコマンド"/removes"を受信
+  // @ts-ignore
+  slack.command('/removes', async ({ ack, say }) => {
+    await ack()
+    await deleteAllMessages(slack, process.env.SLACK_CHANNEL_ID || '')
+  })
 })()
