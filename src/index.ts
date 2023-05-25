@@ -21,6 +21,11 @@ const port = process.env.PORT || 8080
 // これを防ぐためのフラグ
 let processing = false
 
+process.on('uncaughtException', function (err) {
+  console.log('------------ Exception!! -----------')
+  console.log(err)
+})
+
 const healthServerListener = () => {
   const server = http.createServer((req, res) => {
     res.writeHead(200, { 'Content-Type': 'text/plain' })
